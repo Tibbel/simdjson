@@ -157,7 +157,9 @@ simdjson_really_inline void json_iterator::descend_to(depth_t child_depth) noexc
   SIMDJSON_ASSUME(child_depth >= 1 && child_depth < INT32_MAX);
   SIMDJSON_ASSUME(_depth == child_depth - 1);
   _depth = child_depth;
+#if SIMDJSON_ONDEMAND_SAFETY_RAILS
   parser->start_positions[_depth] = token.index;
+#endif
 }
 
 simdjson_really_inline depth_t json_iterator::depth() const noexcept {
@@ -181,7 +183,9 @@ simdjson_really_inline token_position json_iterator::position() const noexcept {
 simdjson_really_inline void json_iterator::reenter_child(token_position position, depth_t child_depth) noexcept {
   SIMDJSON_ASSUME(child_depth >= 1 && child_depth < INT32_MAX);
   SIMDJSON_ASSUME(_depth == child_depth - 1);
+#if SIMDJSON_ONDEMAND_SAFETY_RAILS
   SIMDJSON_ASSUME(position >= parser->start_positions[child_depth]);
+#endif
   token.set_position(position);
   _depth = child_depth;
 }
